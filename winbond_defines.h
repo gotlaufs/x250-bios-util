@@ -11,32 +11,32 @@
 // Status register bits
 // Status register 1
 #define SR1_BUSY 0x01 // Read only
-#define SR1_WEL    0x02 // Read only
-#define SR1_BP0    0x04
-#define SR1_BP1    0x08
-#define SR1_BP2    0x10
-#define SR1_TB       0x20
-#define SR1_SEC    0x40
+#define SR1_WEL  0x02 // Read only (Write-enable latch)
+#define SR1_BP0  0x04
+#define SR1_BP1  0x08
+#define SR1_BP2  0x10
+#define SR1_TB   0x20
+#define SR1_SEC  0x40
 #define SR1_SRP0 0x80
 
 // Status register 2
 #define SR2_SRP1 0x01
-#define SR2_QE      0x02
-#define SR2_RES    0x04 // Reserved
-#define SR2_LB1     0x08
-#define SR2_LB2     0x10
-#define SR2_LB3     0x20
-#define SR2_CMP   0x40
-#define SR2_SUS    0x80  // Read only
+#define SR2_QE   0x02
+#define SR2_RES  0x04 // Reserved
+#define SR2_LB1  0x08
+#define SR2_LB2  0x10
+#define SR2_LB3  0x20
+#define SR2_CMP  0x40
+#define SR2_SUS  0x80  // Read only
 
 // Status register 3
-#define SR3_RES1          0x01 // Reserved
-#define SR3_RES2          0x02 // Reserved
-#define SR3_WPS           0x04
-#define SR3_RES4          0x08 // Reserved
-#define SR3_RES5          0x10 // Reserved
-#define SR3_DRV0          0x20
-#define SR3_DRV1          0x40
+#define SR3_RES1     0x01 // Reserved
+#define SR3_RES2     0x02 // Reserved
+#define SR3_WPS      0x04
+#define SR3_RES4     0x08 // Reserved
+#define SR3_RES5     0x10 // Reserved
+#define SR3_DRV0     0x20
+#define SR3_DRV1     0x40
 #define SR3_HOLD_RST 0x80
 
 // Device instructions
@@ -47,11 +47,11 @@
 
 // Status registers Read/Write
 // B2 = S[7..0]
-#define INS_READ_SR1 0x05
+#define INS_READ_SR1  0x05
 #define INS_WRITE_SR1 0x01
-#define INS_READ_SR2 0x35
+#define INS_READ_SR2  0x35
 #define INS_WRITE_SR2 0x31
-#define INS_READ_SR3 0x15
+#define INS_READ_SR3  0x15
 #define INS_WRITE_SR3 0x11
 
 // Erase
