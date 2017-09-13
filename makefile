@@ -1,19 +1,10 @@
 # Makefile for Lenovo x250 BIOS EEPROM reader/writer
 
-CC=gcc
-CFLAGS=-I src
-DEPS = winbond_defines.h winbond_functions.h ports.h
 
-x250_util: 
-
-
-# Include directory
-IDIR =include
 CC=gcc
 CFLAGS=-I$(IDIR)
 
 ODIR=obj
-LDIR =lib
 
 LIBS=-lwiringPi
 
@@ -24,10 +15,10 @@ _OBJ = ports.o winbond_functions.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 
-$(ODIR)/%.o: %.c $(DEPS)
+$(ODIR)/%.o: src/%.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-hellomake: $(OBJ)
+x250_util: $(OBJ)
 	gcc -o $@ $^ $(CFLAGS) $(LIBS)
 
 .PHONY: clean
