@@ -3,7 +3,7 @@
 
 CC=gcc
 #CFLAGS=-I$(IDIR)
-CFLAGS=
+CFLAGS=-g
 LIBS=-lwiringPi
 
 OBJDIR=obj
