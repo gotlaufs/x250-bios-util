@@ -34,7 +34,6 @@ uint8_t readSR(uint8_t reg, uint8_t *data){
 		break;
 	default:
 		// Error condition
-		printf("DEBUG: Received wrong reg value: %d\n", reg);
 		return 1;	
 	}
 	spiRW(buffer, 2);
@@ -78,11 +77,8 @@ uint8_t writeSR(uint8_t reg, uint8_t data){
 
 	// Debug:
 	readSR(1, &we);
-	if(we & SR1_WEL){
-		printf("DEBUG: Write enable SUCCESS! we = %x\n", we);
-	}
-	else{
-		printf("DEBUG: Write enable FAIL\n");
+	if(!(we & SR1_WEL)){
+		printf("writeSR: ERROR: Unable to get write access to SPI dev!\n");
 		return 1;
 	}
 
@@ -102,8 +98,6 @@ void waitSPIAvailable(void){
 	while(1){
 		readSR(1, &sr1);
 		if (!(sr1 & SR1_BUSY)){
-			// DEBUG
-			printf("Waiting for SPI device....\n");
 			break;
 		}
 	}

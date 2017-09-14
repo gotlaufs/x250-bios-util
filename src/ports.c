@@ -6,9 +6,6 @@
 #include <stdint.h>
 #include "ports.h"
 
-// DEBUG
-#include <stdio.h>
-
 // RaspberryPi SPI library
 #include <wiringPiSPI.h>
 
