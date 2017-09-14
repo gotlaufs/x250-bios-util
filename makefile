@@ -2,26 +2,36 @@
 
 
 CC=gcc
-CFLAGS=-I$(IDIR)
-
-ODIR=obj
-
+#CFLAGS=-I$(IDIR)
+CFLAGS=
 LIBS=-lwiringPi
 
-_DEPS = src/ports.h src/winbond_defines.h src/winbond_functions.h
-DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
+OBJDIR=obj
+EXEDIR=bin
+SRCDIR=src
 
-_OBJ = ports.o winbond_functions.o 
-OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
+HFILES := $(wildcard $(SRCDIR)/*.h)
+CFILES := $(wildcard $(SRCDIR)/*.c)
+
+OBJFILES := $(notdir $(CFILES))
+OBJFILES := $(basename $(OBJFILES))
+OBJFILES := $(addsuffix .o, $(OBJFILES))
+OBJFILES := $(addprefix $(OBJDIR)/, $(OBJFILES))
+
+x250_util: $(OBJFILES) $(OBJDIR) $(EXEDIR)
+	$(CC) -o $(EXEDIR)/$@ $(OBJFILES) $(CFLAGS) $(LIBS)
 
 
-$(ODIR)/%.o: src/%.c $(DEPS)
-	$(CC) -c -o $@ $< $(CFLAGS)
+$(OBJDIR)/%.o: $(SRCDIR)/%.c $(HFILES) $(OBJDIR)
+	$(CC) -o $@ -c $< $(CFLAGS)
 
-x250_util: $(OBJ)
-	gcc -o $@ $^ $(CFLAGS) $(LIBS)
+$(EXEDIR):
+	mkdir $(EXEDIR)
+
+$(OBJDIR):
+	mkdir $(OBJDIR)
 
 .PHONY: clean
 
 clean:
-	rm -f $(ODIR)/*.o *~ core $(INCDIR)/*~ 
+	rm -f $(ODIR)/*.o *~ core $(INCDIR)/*~ $(EXEDIR)/*
