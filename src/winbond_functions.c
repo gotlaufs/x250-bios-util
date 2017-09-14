@@ -90,3 +90,21 @@ uint8_t writeSR(uint8_t reg, uint8_t data){
 	spiWrite(buffer, 2);	
 	return 0;
 }
+
+
+/* waitSPIAvailable: Wait until SPI device is not busy anymore
+ *
+ * This function will lock for the busy interval. It wil return when SPI is
+ * available again
+ */
+void waitSPIAvailable(void){
+	uint8_t sr1 = 0;
+	while(1){
+		readSR(1, &sr1);
+		if (!(sr1 & SR1_BUSY)){
+			// DEBUG
+			printf("Waiting for SPI device....\n");
+			break;
+		}
+	}
+}

@@ -23,6 +23,7 @@ int main(){
 	
 	uint8_t temp = 0;
 	writeSR(1,  temp);
+	waitSPIAvailable();
 	readSR(1, &sr1);
 	readSR(2, &sr2);
 	readSR(3, &sr3);	 

@@ -24,4 +24,12 @@ uint8_t readSR(uint8_t reg, uint8_t *data);
  */
 uint8_t writeSR(uint8_t reg, uint8_t data);
 
+
+/* waitSPIAvailable: Wait until SPI device is not busy anymore
+ *
+ * This function will lock for the busy interval. It wil return when SPI is
+ * available again
+ */
+void waitSPIAvailable(void);
+
 #endif // _WINBOND_FUNCTIONS_H_
