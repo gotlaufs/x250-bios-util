@@ -37,7 +37,7 @@ uint8_t readSR(uint8_t reg, uint8_t *data){
 		printf("DEBUG: Received wrong reg value: %d\n", reg);
 		return 1;	
 	}
-	spiRead(buffer, 2);
+	spiRW(buffer, 2);
 	
 	*data = buffer[1];
 	return 0;
@@ -78,8 +78,8 @@ uint8_t writeSR(uint8_t reg, uint8_t data){
 
 	// Debug:
 	readSR(1, &we);
-	if(we && SR1_WEL){
-		printf("DEBUG: Write enable SUCCESS!\n");
+	if(we & SR1_WEL){
+		printf("DEBUG: Write enable SUCCESS! we = %x\n", we);
 	}
 	else{
 		printf("DEBUG: Write enable FAIL\n");

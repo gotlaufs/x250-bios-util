@@ -28,6 +28,7 @@ uint8_t spiInit(int *file_descriptor);
  *
  * Return: error status. '0' on success.
  */ 
+// TODO: Remove this as SPI read makes no sense ..
 uint8_t spiRead(uint8_t *data, uint8_t num_bytes);
 
 
@@ -36,6 +37,16 @@ uint8_t spiRead(uint8_t *data, uint8_t num_bytes);
  * Return: error status. '0' on success.
  */
 uint8_t spiWrite(uint8_t *data, uint8_t num_bytes);
+
+
+/* spiRW: Write data to SPI device and synchronously read it
+ *
+ * The number of bytes 'num_bytes' is read from 'data' and th read data is
+ * saved back to it. Synchronous operation.
+ *
+ * Return: error status. '0' on success.
+ */
+uint8_t spiRW(uint8_t *data, uint8_t num_bytes);
 
 
 #endif  // _PORTS_H_

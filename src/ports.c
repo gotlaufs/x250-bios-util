@@ -41,7 +41,6 @@ uint8_t spiRead(uint8_t *data, uint8_t num_bytes){
 	static uint8_t buffer[SPI_BUFFER_SIZE];
 	uint8_t err;
 	err = wiringPiSPIDataRW(SPI_CHANNEL, buffer, num_bytes);
-	printf("DEBUG: err = %d\n", err);
 	data = buffer;
 
 	if (err > 0 ){
@@ -69,11 +68,37 @@ uint8_t spiWrite(uint8_t *data, uint8_t num_bytes){
 	}
 	uint8_t err;
 	err = wiringPiSPIDataRW(SPI_CHANNEL, buffer, num_bytes);
-	printf("DEBUG: err = %d\n", err);
 
 	if (err > 0 ){
 		return 0;
 	}
 	else{
 		return 1;
+	}
 }
+
+
+/* spiRW: Write data to SPI device and synchronously read it
+ *
+ * The number of bytes 'num_bytes' is read from 'data' and th read data is
+ * saved back to it. Synchronous operation.
+ *
+ * Return: error status. '0' on success.
+ *
+ * Works as a simple wrapper for wiringPi's function
+ * WiringPi uses 'ioctl' in the manner:
+ * 	ioctl (spiFds [channel], SPI_IOC_MESSAGE(1), &spi)
+ *  It returns positive value on success.
+ */
+uint8_t spiRW(uint8_t *data, uint8_t num_bytes){
+	uint8_t err;
+	err = wiringPiSPIDataRW(SPI_CHANNEL, data, num_bytes);
+
+	if (err > 0 ){
+		return 0;
+	}
+	else{
+		return 1;
+	}
+}
+
