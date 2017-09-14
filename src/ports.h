@@ -9,6 +9,12 @@
 #define _PORTS_H_
 #include <stdint.h>
 
+// SPI buffer size in bytes
+#define SPI_BUFFER_SIZE 256
+
+// Raspberry Pi specific
+#define SPI_CHANNEL 1
+#define SPI_SPEED 500000
 
 /* spiInit: Initialize SPI device. 
  *

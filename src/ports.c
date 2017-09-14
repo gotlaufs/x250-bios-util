@@ -6,11 +6,11 @@
 #include <stdint.h>
 #include "ports.h"
 
+// DEBUG
+#include <stdio.h>
+
 // RaspberryPi SPI library
 #include <wiringPiSPI.h>
-
-int CHANNEL = 1;
-short SPEED = 500000;
 
 /* spiInit: Initialize SPI device. 
  *
@@ -19,7 +19,7 @@ short SPEED = 500000;
  * WiringPi returns '-1' on error.
  */
 uint8_t spiInit(int *file_descriptor){
-	*file_descriptor = wiringPiSPISetup(CHANNEL, SPEED);
+	*file_descriptor = wiringPiSPISetup(SPI_CHANNEL, SPI_SPEED);
 	if (*file_descriptor != -1){
 		return 0;
 	}
@@ -33,14 +33,23 @@ uint8_t spiInit(int *file_descriptor){
  *
  * Return: error status. '0' on success.
  * Buffer array is used, because WiringPi overwrites 'buffer' array.
+ * WiringPi uses 'ioctl' in the manner:
+ * 	ioctl (spiFds [channel], SPI_IOC_MESSAGE(1), &spi)
+ *  It returns positive value on success.
  */ 
 uint8_t spiRead(uint8_t *data, uint8_t num_bytes){
-	static uint8_t buffer[num_bytes];
+	static uint8_t buffer[SPI_BUFFER_SIZE];
 	uint8_t err;
-	err = wiringPiSPIDataRW(CHANNEL, buffer, num_bytes);
+	err = wiringPiSPIDataRW(SPI_CHANNEL, buffer, num_bytes);
 	printf("DEBUG: err = %d\n", err);
 	data = buffer;
-	// TODO: Add return error variables
+
+	if (err > 0 ){
+		return 0;
+	}
+	else{
+		return 1;
+	}
 }
 
 
@@ -50,15 +59,21 @@ uint8_t spiRead(uint8_t *data, uint8_t num_bytes){
  * Array is copied, because WiringPi overwrites 'buffer' array.
  * WiringPi uses 'ioctl' in the manner:
  * 	ioctl (spiFds [channel], SPI_IOC_MESSAGE(1), &spi)
+ *  It returns positive value on success.
  */
 uint8_t spiWrite(uint8_t *data, uint8_t num_bytes){
-	static uint8_t buffer[num_bytes];
+	static uint8_t buffer[SPI_BUFFER_SIZE];
 	uint8_t i;
 	for (i=0; i<num_bytes; i++){
 		buffer[i] = data[i];
 	}
 	uint8_t err;
-	err = wiringPiSPIDataRW(CHANNEL, buffer, num_bytes);
+	err = wiringPiSPIDataRW(SPI_CHANNEL, buffer, num_bytes);
 	printf("DEBUG: err = %d\n", err);
-	// TODO: Add return error variables
+
+	if (err > 0 ){
+		return 0;
+	}
+	else{
+		return 1;
 }
