@@ -8,6 +8,8 @@
 #include "winbond_functions.h"
 #include "winbond_defines.h"
 #include "ports.h"
+// DEBUG
+#include <stdio.h>
 
 /* readSR: Read Status Register 1-3
  *
@@ -53,6 +55,7 @@ uint8_t writeSR(uint8_t reg, uint8_t data){
 	//
 	// Returns error condition: '1' if error
 	uint8_t buffer[2];
+	uint8_t we = INS_WRITE_ENABLE;
 
 	switch (reg){
 	case 1:
@@ -71,7 +74,7 @@ uint8_t writeSR(uint8_t reg, uint8_t data){
 	}
 
 	// Unlock Write access to SR first
-	spiWrite(INS_WRITE_ENABLE, 1);
+	spiWrite(&we, 1);
 
 	// Debug:
 	readSR(1, &we);
