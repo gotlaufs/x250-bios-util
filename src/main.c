@@ -1,7 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h>
-#include <wiringPiSPI.h>
 #include "winbond_defines.h"
 #include "ports.h"
 #include "winbond_functions.h"

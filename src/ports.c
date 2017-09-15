@@ -7,7 +7,12 @@
 #include "ports.h"
 
 // RaspberryPi SPI library
+// Test if need to use mocks if not compiling on RaspberryPi
+#ifdef __arm__
 #include <wiringPiSPI.h>
+#else
+#include "mocks/mock_wiringPiSPI.h"
+#endif
 
 /* spiInit: Initialize SPI device. 
  *
