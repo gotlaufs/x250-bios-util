@@ -36,10 +36,15 @@ uint8_t readSR(uint8_t reg, uint8_t *data){
 		// Error condition
 		return 1;	
 	}
-	spiRW(buffer, 2);
 	
-	*data = buffer[1];
-	return 0;
+	if(spiRW(buffer, 2)){
+		return 1;
+	}
+	else{
+		*data = buffer[1];
+		return 0;
+	}
+
 }
 
 
@@ -54,7 +59,6 @@ uint8_t writeSR(uint8_t reg, uint8_t data){
 	//
 	// Returns error condition: '1' if error
 	uint8_t buffer[2];
-	uint8_t we = INS_WRITE_ENABLE;
 
 	switch (reg){
 	case 1:
@@ -73,18 +77,17 @@ uint8_t writeSR(uint8_t reg, uint8_t data){
 	}
 
 	// Unlock Write access to SR first
-	spiWrite(&we, 1);
-
-	// Debug:
-	readSR(1, &we);
-	if(!(we & SR1_WEL)){
-		printf("writeSR: ERROR: Unable to get write access to SPI dev!\n");
+	if (writeEnable()){
 		return 1;
 	}
 
 	buffer[1] = data;
-	spiWrite(buffer, 2);	
-	return 0;
+	if (spiWrite(buffer, 2)){
+		return 1;
+	}	
+	else{
+		return 0;
+	}
 }
 
 
@@ -100,5 +103,26 @@ void waitSPIAvailable(void){
 		if (!(sr1 & SR1_BUSY)){
 			break;
 		}
+	}
+}
+
+
+/* writeEnable: Enable write access to the chip
+ *
+ * This must be called before any write instruction to the device
+ * Return: error status. '0' on success.
+ */
+uint8_t writeEnable(void){
+	uint8_t we = INS_WRITE_ENABLE;
+	spiWrite(&we, 1);
+
+	// Debug:
+	readSR(1, &we);
+	if(!(we & SR1_WEL)){
+		// printf("writeSR: ERROR: Unable to get write access to SPI dev!\n");
+		return 1;
+	}
+	else{
+		return 0;
 	}
 }

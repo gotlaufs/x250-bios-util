@@ -32,4 +32,12 @@ uint8_t writeSR(uint8_t reg, uint8_t data);
  */
 void waitSPIAvailable(void);
 
+
+/* writeEnable: Enable write access to the chip
+ *
+ * This must be called before any write instruction to the device
+ * Return: error status. '0' on success.
+ */
+uint8_t writeEnable(void);
+
 #endif // _WINBOND_FUNCTIONS_H_
