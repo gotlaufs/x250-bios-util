@@ -8,6 +8,9 @@
 #ifndef _WINBOND_DEFINES_H_
 #define _WINBOND_DEFINES_H_
 
+// Entire memory size in bytes. 16 MB = 128 Mbit
+#define MEMORY_SIZE 0x1000000
+
 // Status register bits
 // Status register 1
 #define SR1_BUSY 0x01 // Read only

@@ -40,4 +40,16 @@ void waitSPIAvailable(void);
  */
 uint8_t writeEnable(void);
 
+/* readData: Read some bytes of data into data buffer from address
+ *	
+ * Args: 	data: data buffer to read data into
+ * 			num_bytes: number of bytes to read
+ * 			address: data address to begin read. Address is 24-bits long
+ * Return:	error status. '0' on success.
+ *
+ * Entire memory (up to address 'MEMORY_SIZE') can be read in single instruction
+ * 'data' array must be allocated for full read. 
+ */
+uint8_t readData(uint8_t *data, uint32_t num_bytes, uint32_t address);
+
 #endif // _WINBOND_FUNCTIONS_H_

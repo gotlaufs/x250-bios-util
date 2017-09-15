@@ -114,6 +114,7 @@ void waitSPIAvailable(void){
  */
 uint8_t writeEnable(void){
 	uint8_t we = INS_WRITE_ENABLE;
+	// TODO: Add error checking
 	spiWrite(&we, 1);
 
 	// Debug:
@@ -125,4 +126,53 @@ uint8_t writeEnable(void){
 	else{
 		return 0;
 	}
+}
+
+
+/* readData: Read some bytes of data into data buffer from address
+ *	
+ * Args: 	data: data buffer to read data into
+ * 			num_bytes: number of bytes to read
+ * 			address: data address to begin read. Address is 24-bits long
+ * Return:	error status. '0' on success.
+ *
+ * Entire memory (up to address 'MEMORY_SIZE') can be read in single read
+ */
+uint8_t readData(uint8_t *data, uint32_t num_bytes, uint32_t address){
+	uint32_t i;
+	// Check if enough bytes in memory
+	// TODO: Check if '>' or '>='
+	if ((address + num_bytes) >= MEMORY_SIZE){
+		// Out of bounds
+		printf("max address = %x, Mem size = %x\n",
+			 	address + num_bytes, MEMORY_SIZE)
+		return 1;
+	}
+
+	uint8_t *buffer; 
+	buffer = (uint8_t *) malloc(num_bytes + 4);
+
+	// Assemble read instruction
+	buffer[0] = INS_READ_DATA;
+	buffer[1] = (uint8_t) address >> 16;
+	buffer[2] = (uint8_t) address >> 8;
+	buffer[3] = (uint8_t) address;
+
+	// Inefficient copying of data to temp buffer
+	for (i=0; i<num_bytes; i++){
+		buffer[i + 4] = data[i];
+	}
+
+	// Read the data
+	if (spiRW(buffer, num_bytes + 4)){
+		return 1;
+	}
+
+	// Inefficient copying of read data from temp buffer
+	for (i=0; i<num_bytes; i++){
+		data[i] = buffer[i + 4];
+	}	
+
+	free(buffer);
+	return 0;
 }
