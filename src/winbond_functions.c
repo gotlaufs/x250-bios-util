@@ -5,6 +5,7 @@
  */
 
 #include <stdint.h>
+#include <stdlib.h>
 #include "winbond_functions.h"
 #include "winbond_defines.h"
 #include "ports.h"
@@ -145,7 +146,7 @@ uint8_t readData(uint8_t *data, uint32_t num_bytes, uint32_t address){
 	if ((address + num_bytes) >= MEMORY_SIZE){
 		// Out of bounds
 		printf("max address = %x, Mem size = %x\n",
-			 	address + num_bytes, MEMORY_SIZE)
+			 	address + num_bytes, MEMORY_SIZE);
 		return 1;
 	}
 

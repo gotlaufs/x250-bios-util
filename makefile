@@ -23,7 +23,7 @@ x250_util: $(OBJFILES) $(OBJDIR) $(EXEDIR)
 
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c $(HFILES) $(OBJDIR)
-	$(CC) -o $@ -c $< $(CFLAGS)
+	$(CC) -o $@ -c $< $(CFLAGS) $(LIBS)
 
 $(EXEDIR):
 	mkdir $(EXEDIR)
