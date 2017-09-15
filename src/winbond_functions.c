@@ -1,5 +1,5 @@
 /*
- * file: winbond_functions.h
+ * file: winbond_functions.c
  *
  * Functions for handling Windond W25Q128 SPI EEPROM.
  */

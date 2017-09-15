@@ -4,6 +4,7 @@
 #include "winbond_defines.h"
 #include "ports.h"
 #include "winbond_functions.h"
+#include "defines.h"
 
 int main(){
 	int spi_dev;
@@ -11,19 +12,19 @@ int main(){
 	uint8_t *eeprom_buffer;
 	FILE *eeprom_file, *sr_file;
 
-	printf("x250 BIOS chip utility\n\n")
+	printf("x250 BIOS chip utility\n\n");
 	
-	printf("Opening SPI device..\n")
+	printf("Opening SPI device..\n");
 	if (spiInit(&spi_dev)){
 		return 1;
 	}
 
-	printf("Reading status registers..\n")
+	printf("Reading status registers..\n");
 
 	if (readSR(1, &sr1)){
 		return 1;
 	}
-	if (ifreadSR(2, &sr2)){
+	if (readSR(2, &sr2)){
 		return 1;
 	}
 	if (readSR(3, &sr3)){
@@ -44,10 +45,10 @@ int main(){
 	fclose(sr_file);
 
 	printf("Reading entire BIOS chip into memory..\n");
-	buffer = (uint8_t *) malloc(MEMORY_SIZE);
+	eeprom_buffer = (uint8_t *) malloc(MEMORY_SIZE);
 
-	if (readData(buffer, MEMORY_SIZE, 0x0)){
-		free(buffer);
+	if (readData(eeprom_buffer, MEMORY_SIZE, 0x0)){
+		free(eeprom_buffer);
 		return 1;
 	}
 
@@ -55,14 +56,14 @@ int main(){
 	// Write in binary mode
 	eeprom_file = fopen(EEPROM_FILE, "wb");
 	if (eeprom_file = NULL){
-		free(buffer);
+		free(eeprom_buffer);
 		return 1;
 	}
-	fwrite(buffer, sizeof(uint8_t), sizeof(buffer), eeprom_file);
+	fwrite(eeprom_buffer, sizeof(uint8_t), sizeof(eeprom_buffer), eeprom_file);
 	fclose(eeprom_file);
 
 	printf("All done!\n");
 	printf("Exiting..\n");
-	free(buffer);
+	free(eeprom_buffer);
 	return 0;
 }

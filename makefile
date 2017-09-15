@@ -5,6 +5,7 @@ CC=gcc
 #CFLAGS=-I$(IDIR)
 CFLAGS=-g
 LIBS=-lwiringPi
+#LIBS=
 
 OBJDIR=obj
 EXEDIR=bin
