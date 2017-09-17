@@ -95,8 +95,7 @@ uint8_t spiWrite(uint8_t *data, uint8_t num_bytes){
 uint8_t spiRW(uint8_t *data, uint8_t num_bytes){
 	uint8_t err;
 	err = wiringPiSPIDataRW(SPI_CHANNEL, data, num_bytes);
-
-	if (err > 0 ){
+	if (err >= 0 ){
 		return 0;
 	}
 	else{
