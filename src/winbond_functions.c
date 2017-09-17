@@ -143,7 +143,7 @@ uint8_t readData(uint8_t *data, uint32_t num_bytes, uint32_t address){
 	uint32_t i;
 	// Check if enough bytes in memory
 	// TODO: Check if '>' or '>='
-	if ((address + num_bytes) >= MEMORY_SIZE){
+	if ((address + num_bytes) > MEMORY_SIZE){
 		// Out of bounds
 		printf("max address = %x, Mem size = %x\n",
 			 	address + num_bytes, MEMORY_SIZE);
