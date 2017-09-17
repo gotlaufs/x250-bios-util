@@ -92,7 +92,7 @@ uint8_t spiWrite(uint8_t *data, uint8_t num_bytes){
  * 	ioctl (spiFds [channel], SPI_IOC_MESSAGE(1), &spi)
  *  It returns positive value on success.
  */
-uint8_t spiRW(uint8_t *data, uint8_t num_bytes){
+uint8_t spiRW(uint8_t *data, uint32_t num_bytes){
 	uint8_t err;
 	err = wiringPiSPIDataRW(SPI_CHANNEL, data, num_bytes);
 	if (err >= 0 ){

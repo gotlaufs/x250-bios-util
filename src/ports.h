@@ -46,7 +46,7 @@ uint8_t spiWrite(uint8_t *data, uint8_t num_bytes);
  *
  * Return: error status. '0' on success.
  */
-uint8_t spiRW(uint8_t *data, uint8_t num_bytes);
+uint8_t spiRW(uint8_t *data, uint32_t num_bytes);
 
 
 #endif  // _PORTS_H_
