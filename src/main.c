@@ -10,6 +10,7 @@ int main(){
 	int spi_dev;
 	uint8_t sr1 = 0, sr2 = 0, sr3 = 0;
 	uint8_t *eeprom_buffer;
+	char *filename;
 	FILE *eeprom_file, *sr_file;
 
 	printf("x250 BIOS chip utility\n\n");
@@ -33,8 +34,9 @@ int main(){
 	printf("SR1 = %x; SR2 = %x; SR3 = %x\n\n", sr1, sr2, sr3);
 
 	printf("Writing status register info to file: %s\n", REGISTER_FILE);
-	sr_file = fopen(REGISTER_FILE, "w");
-	if (sr_file = NULL){
+	filename = REGISTER_FILE;
+	sr_file = fopen(filename, "w");
+	if (sr_file == NULL){
 		return 1;
 	}
 
@@ -55,7 +57,7 @@ int main(){
 	printf("Writing EEPROM dump to file: %s\n", EEPROM_FILE);
 	// Write in binary mode
 	eeprom_file = fopen(EEPROM_FILE, "wb");
-	if (eeprom_file = NULL){
+	if (eeprom_file == NULL){
 		free(eeprom_buffer);
 		return 1;
 	}
