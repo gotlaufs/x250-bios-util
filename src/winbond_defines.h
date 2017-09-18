@@ -94,5 +94,9 @@
 // Power
 #define INS_POWER_DOWN 0xB9
 
+// Security Register addresses
+#define ADDR_SEC_R_1 0x001000
+#define ADDR_SEC_R_2 0x002000
+#define ADDR_SEC_R_3 0x003000
 
 #endif // _WINBOND_DEFINES_H_

@@ -25,6 +25,17 @@ uint8_t readSR(uint8_t reg, uint8_t *data);
 uint8_t writeSR(uint8_t reg, uint8_t data);
 
 
+/* readSecurityReg: Read Security Register 1-3
+ *
+ * Args: reg: Security Register number. 1-3
+ * 		 data: Pointer to variable to save data
+ * Return: error status. '0' on success.
+ *
+ * Security registers are 256-Bytes long.
+ */
+uint8_t readSecurityReg(uint8_t reg, uint8_t *data);
+
+
 /* waitSPIAvailable: Wait until SPI device is not busy anymore
  *
  * This function will lock for the busy interval. It wil return when SPI is

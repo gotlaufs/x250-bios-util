@@ -56,9 +56,6 @@ uint8_t readSR(uint8_t reg, uint8_t *data){
  * Return: error status. '0' on success.
  */
 uint8_t writeSR(uint8_t reg, uint8_t data){
-	// Write status register 1-3 specified by 'reg'
-	//
-	// Returns error condition: '1' if error
 	uint8_t buffer[2];
 
 	switch (reg){
@@ -89,6 +86,54 @@ uint8_t writeSR(uint8_t reg, uint8_t data){
 	else{
 		return 0;
 	}
+}
+
+
+/* readSecurityReg: Read Security Register 1-3
+ *
+ * Args: reg: Security Register number. 1-3
+ * 		 data: Pointer to variable to save data
+ * Return: error status. '0' on success.
+ *
+ * Security registers are 256-Bytes long.
+ * They are byte-addressable, but that is currently not implemented.
+ */
+uint8_t readSecurityReg(uint8_t reg, uint8_t *data){
+	uint8_t buffer[256 + 5];
+
+	switch (reg){
+	case 1:
+		buffer[0] = INS_READ_SECURITY_REG;
+		break;
+	case 2:
+		buffer[0] = INS_READ_SECURITY_REG;
+		break;
+	case 3:
+		buffer[0] = INS_READ_SECURITY_REG;
+		break;
+	default:
+		// Error condition
+		printf("Received wrong reg value: %d\n", reg);
+		return 1;
+	}
+
+	// Beginning address.
+	buffer[1] = 0x00;
+	buffer[2] = 0x00;
+	buffer[3] = 0x00;
+	// 8 dummy bytes 
+	buffer[4] = 0x00;
+
+	if(spiRW(buffer, 256 + 5)){
+		return 1;
+	}
+	
+	// Write out data
+	for (i=0; i<256; i++){
+		data[i] = buffer[i+5];
+	}
+
+	return 0;
 }
 
 
