@@ -40,6 +40,7 @@ void waitSPIAvailable(void);
  */
 uint8_t writeEnable(void);
 
+
 /* readData: Read some bytes of data into data buffer from address
  *	
  * Args: 	data: data buffer to read data into
@@ -51,5 +52,45 @@ uint8_t writeEnable(void);
  * 'data' array must be allocated for full read. 
  */
 uint8_t readData(uint8_t *data, uint32_t num_bytes, uint32_t address);
+
+
+/* pageProgram: Write number of bytes to a page in EEPROM
+ *	
+ * Args: 	data: data buffer to write to EEPROM
+ * 			num_bytes: number of bytes to write
+ * 			address: data address to begin write
+ . Address is 24-bits long
+ * Return:	error status. '0' on success.
+ *
+ * Up to 256 bytes can be written. If 'address' is not a page border (last byte)
+ * not '0x00', less than 256 bytes can be programmed. This is checked by the
+ * function.
+ * Only previously erased (0xFF) bytes can be programmed. This will
+ * automatically erase number of bytes if they are not '0xFF'.
+ */
+uint8_t pageProgram(uint8_t *data, uint32_t num_bytes, uint32_t address);
+
+
+/* sectorErase: Erase 4-kB data sector in the EEPROM
+ *
+ * Args: 	address: data address to begin read. Address is 24-bits long
+ * Return:	error status. '0' on success.
+ *
+ * The sector is defined by A[24:12]. There are 4096 pages in total for 128 Mbit
+ * EEPROM.
+ * If the sector contains write-protected blocks/sectors/pages, they will remain
+ * un-erased.
+ */
+uint8_t sectorErase(uint32_t address);
+
+
+/* chipErase: Write number of bytes to a page in EEPROM
+ *
+ * Return:	error status. '0' on success.
+ *
+ * If the memory contains write-protected blocks/sectors/pages, they will remain
+ * un-erased.
+ */
+uint8_t chipErase(void);
 
 #endif // _WINBOND_FUNCTIONS_H_
