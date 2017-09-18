@@ -100,16 +100,18 @@ uint8_t writeSR(uint8_t reg, uint8_t data){
  */
 uint8_t readSecurityReg(uint8_t reg, uint8_t *data){
 	uint8_t buffer[256 + 5];
+	uint16_t i;
+	uint32_t address;
 
 	switch (reg){
 	case 1:
-		buffer[0] = INS_READ_SECURITY_REG;
+		address = ADDR_SEC_R_1;
 		break;
 	case 2:
-		buffer[0] = INS_READ_SECURITY_REG;
+		address = ADDR_SEC_R_2;
 		break;
 	case 3:
-		buffer[0] = INS_READ_SECURITY_REG;
+		address = ADDR_SEC_R_3;
 		break;
 	default:
 		// Error condition
@@ -117,10 +119,11 @@ uint8_t readSecurityReg(uint8_t reg, uint8_t *data){
 		return 1;
 	}
 
+	buffer[0] = INS_READ_SECURITY_REG;
 	// Beginning address.
-	buffer[1] = 0x00;
-	buffer[2] = 0x00;
-	buffer[3] = 0x00;
+	buffer[1] = (uint8_t) (address >> 16);
+	buffer[2] = (uint8_t) (address >> 8);
+	buffer[3] = (uint8_t) (address);
 	// 8 dummy bytes 
 	buffer[4] = 0x00;
 
@@ -213,9 +216,9 @@ uint8_t readData(uint8_t *data, uint32_t num_bytes, uint32_t address){
 		printf("Reading chunk %d out of %d\r", j, num_chunks);
 		// Assemble read instruction
 		buffer[0] = INS_READ_DATA;
-		buffer[1] = (uint8_t) address >> 16;
-		buffer[2] = (uint8_t) address >> 8;
-		buffer[3] = (uint8_t) address;
+		buffer[1] = (uint8_t) (address >> 16);
+		buffer[2] = (uint8_t) (address >> 8);
+		buffer[3] = (uint8_t) (address);
 
 		// Read the data
 		if (spiRW(buffer, CHUNK_SIZE + 4)){
