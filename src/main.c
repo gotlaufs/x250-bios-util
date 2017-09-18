@@ -61,7 +61,7 @@ int main(){
 		free(eeprom_buffer);
 		return 1;
 	}
-	fwrite(eeprom_buffer, sizeof(uint8_t), sizeof(eeprom_buffer), eeprom_file);
+	fwrite(eeprom_buffer, sizeof(uint8_t), MEMORY_SIZE, eeprom_file);
 	fclose(eeprom_file);
 
 	printf("All done!\n");
