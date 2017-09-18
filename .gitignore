@@ -1,6 +1,7 @@
 # Output files for x250_util
 eeprom_dump
 status_registers.txt
+security_register*
 
 # Prerequisites
 *.d
