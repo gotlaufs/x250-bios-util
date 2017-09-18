@@ -137,12 +137,15 @@ uint8_t writeEnable(void){
  * 			address: data address to begin read. Address is 24-bits long
  * Return:	error status. '0' on success.
  *
- * Entire memory (up to address 'MEMORY_SIZE') can be read in single read
+ * Memory will be read in 2kB chunks because default RaspberryPi SPI buffer is
+ * 4 kB and 4 bytes are needed for instruction+address.
  */
 uint8_t readData(uint8_t *data, uint32_t num_bytes, uint32_t address){
-	uint32_t i;
+	const uint16_t CHUNK_SIZE = 0x800; // 2kB
+	uint32_t i, j;
+	uint16_t num_chunks;
+	uint16_t rem_bytes;
 	// Check if enough bytes in memory
-	// TODO: Check if '>' or '>='
 	if ((address + num_bytes) > MEMORY_SIZE){
 		// Out of bounds
 		printf("max address = %x, Mem size = %x\n",
@@ -150,29 +153,45 @@ uint8_t readData(uint8_t *data, uint32_t num_bytes, uint32_t address){
 		return 1;
 	}
 
-	uint8_t *buffer; 
-	buffer = (uint8_t *) malloc(num_bytes + 4);
+	// Calculate number of 2kB chunks to read and leftover bytes
+	num_chunks = num_bytes / CHUNK_SIZE;
+	rem_bytes = num_bytes - num_chunks * CHUNK_SIZE;
 
-	// Assemble read instruction
+	uint8_t *buffer; 
+	buffer = (uint8_t *) malloc(CHUNK_SIZE + 4);
+
+	for (j=0; j<num_chunks; j++){
+		// Assemble read instruction
+		buffer[0] = INS_READ_DATA;
+		buffer[1] = (uint8_t) address >> 16;
+		buffer[2] = (uint8_t) address >> 8;
+		buffer[3] = (uint8_t) address;
+
+		// Read the data
+		if (spiRW(buffer, CHUNK_SIZE + 4)){
+			return 1;
+		}
+
+		for (i=0; i<CHUNK_SIZE; i++){
+			data[i + j * CHUNK_SIZE] = buffer[i + 4];
+		}
+
+		address += CHUNK_SIZE;
+	}
+
+	// Leftover bytes
 	buffer[0] = INS_READ_DATA;
 	buffer[1] = (uint8_t) address >> 16;
 	buffer[2] = (uint8_t) address >> 8;
 	buffer[3] = (uint8_t) address;
 
-	// Inefficient copying of data to temp buffer
-	for (i=0; i<num_bytes; i++){
-		buffer[i + 4] = data[i];
-	}
-
-	// Read the data
-	if (spiRW(buffer, num_bytes + 4)){
+	if (spiRW(buffer, rem_bytes + 4)){
 		return 1;
 	}
 
-	// Inefficient copying of read data from temp buffer
-	for (i=0; i<num_bytes; i++){
-		data[i] = buffer[i + 4];
-	}	
+	for (i=0; i<rem_bytes; i++){
+		data[i + num_chunks * CHUNK_SIZE] = buffer[i + 4];
+	}
 
 	free(buffer);
 	return 0;

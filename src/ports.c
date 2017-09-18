@@ -102,4 +102,3 @@ uint8_t spiRW(uint8_t *data, uint32_t num_bytes){
 		return 1;
 	}
 }
-
