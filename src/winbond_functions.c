@@ -148,7 +148,7 @@ uint8_t readData(uint8_t *data, uint32_t num_bytes, uint32_t address){
 	// Check if enough bytes in memory
 	if ((address + num_bytes) > MEMORY_SIZE){
 		// Out of bounds
-		printf("max address = %x, Mem size = %x\n",
+		printf("readData: Out of bounds! max address = %x, Mem size = %x\n",
 			 	address + num_bytes, MEMORY_SIZE);
 		return 1;
 	}
@@ -159,8 +159,13 @@ uint8_t readData(uint8_t *data, uint32_t num_bytes, uint32_t address){
 
 	uint8_t *buffer; 
 	buffer = (uint8_t *) malloc(CHUNK_SIZE + 4);
-
+	
+	printf("Number of bytes to read: 0x%x or %d\n", num_bytes, num_bytes);
+	printf("Number of chunks: 0x%x or %d\n", num_chunks, num_chunks);
+	printf("Number of free bytes to read: 0x%x or %d\n", rem_bytes, rem_bytes);
 	for (j=0; j<num_chunks; j++){
+		// DEBUG:
+		printf("Reading chunk %d out of %d\r", j, num_chunks);
 		// Assemble read instruction
 		buffer[0] = INS_READ_DATA;
 		buffer[1] = (uint8_t) address >> 16;
@@ -178,20 +183,24 @@ uint8_t readData(uint8_t *data, uint32_t num_bytes, uint32_t address){
 
 		address += CHUNK_SIZE;
 	}
+	printf("\n");
 
 	// Leftover bytes
-	buffer[0] = INS_READ_DATA;
-	buffer[1] = (uint8_t) address >> 16;
-	buffer[2] = (uint8_t) address >> 8;
-	buffer[3] = (uint8_t) address;
+	if (rem_bytes){
+		printf("Reading leftover bytes.. \n");
+		buffer[0] = INS_READ_DATA;
+		buffer[1] = (uint8_t) address >> 16;
+		buffer[2] = (uint8_t) address >> 8;
+		buffer[3] = (uint8_t) address;
 
-	if (spiRW(buffer, rem_bytes + 4)){
-		return 1;
-	}
+		if (spiRW(buffer, rem_bytes + 4)){
+			return 1;
+		}
 
-	for (i=0; i<rem_bytes; i++){
-		data[i + num_chunks * CHUNK_SIZE] = buffer[i + 4];
-	}
+		for (i=0; i<rem_bytes; i++){
+			data[i + num_chunks * CHUNK_SIZE] = buffer[i + 4];
+		}
+	}	
 
 	free(buffer);
 	return 0;
