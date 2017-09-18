@@ -9,9 +9,11 @@
 int main(){
 	int spi_dev;
 	uint8_t sr1 = 0, sr2 = 0, sr3 = 0;
+	uint8_t sec_reg[256];
 	uint8_t *eeprom_buffer;
+	// TODO: Remove filename var
 	char *filename;
-	FILE *eeprom_file, *sr_file;
+	FILE *eeprom_file, *sr_file, *sec_reg_file;
 
 	printf("x250 BIOS chip utility\n\n");
 	
@@ -45,6 +47,43 @@ int main(){
 	fprintf(sr_file, "SR2 = %x\n", sr2);
 	fprintf(sr_file, "SR3 = %x\n", sr3);
 	fclose(sr_file);
+
+	printf("Reading Security Register 1..\n");
+	if (readSecurityReg(1, sec_reg)){
+		return 1;
+	}
+	printf("Writing Security Register 1 to file: %s\n", SEC_REG_FILE_1);
+	sec_reg_file = fopen(SEC_REG_FILE_1, "wb");
+	if (sec_reg_file == NULL){
+		return 1;
+	}
+	fwrite(sec_reg, sizeof(uint8_t), 256, sec_reg_file);
+	fclose(sec_reg_file);
+
+	printf("Reading Security Register 2..\n");
+	if (readSecurityReg(2, sec_reg)){
+		return 1;
+	}
+	printf("Writing Security Register 2 to file: %s\n", SEC_REG_FILE_2);
+	sec_reg_file = fopen(SEC_REG_FILE_2, "wb");
+	if (sec_reg_file == NULL){
+		return 1;
+	}
+	fwrite(sec_reg, sizeof(uint8_t), 256, sec_reg_file);
+	fclose(sec_reg_file);
+
+	printf("Reading Security Register 3..\n");
+	if (readSecurityReg(3, sec_reg)){
+		return 1;
+	}
+	printf("Writing Security Register 3 to file: %s\n", SEC_REG_FILE_3);
+	sec_reg_file = fopen(SEC_REG_FILE_3, "wb");
+	if (sec_reg_file == NULL){
+		return 1;
+	}
+	fwrite(sec_reg, sizeof(uint8_t), 256, sec_reg_file);
+	fclose(sec_reg_file);
+	
 
 	printf("Reading entire BIOS chip into memory..\n");
 	eeprom_buffer = (uint8_t *) malloc(MEMORY_SIZE);
