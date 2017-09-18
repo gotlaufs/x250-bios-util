@@ -11,7 +11,7 @@
 #ifdef __arm__
 #include <wiringPiSPI.h>
 #else
-#include "mock_wiringPiSPI.h"
+#include "mocks/mock_wiringPiSPI.h"
 #endif
 
 /* spiInit: Initialize SPI device. 
