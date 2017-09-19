@@ -5,6 +5,10 @@
 #include "ports.h"
 #include "winbond_functions.h"
 #include "defines.h"
+#include "error.h"
+
+// Global error variable
+uint8_t errvar = ERROR_NO_ERROR;
 
 int main(){
 	int spi_dev;
