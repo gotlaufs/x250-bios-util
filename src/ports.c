@@ -31,29 +31,6 @@ uint8_t spiInit(int *file_descriptor){
 }
 
 
-/* spiRead: Read 'num_bytes' into 'data' buffer.
- *
- * Return: error status. '0' on success.
- * Buffer array is used, because WiringPi overwrites 'buffer' array.
- * WiringPi uses 'ioctl' in the manner:
- * 	ioctl (spiFds [channel], SPI_IOC_MESSAGE(1), &spi)
- *  It returns positive value on success.
- */ 
-uint8_t spiRead(uint8_t *data, uint8_t num_bytes){
-	static uint8_t buffer[SPI_BUFFER_SIZE];
-	uint8_t err;
-	err = wiringPiSPIDataRW(SPI_CHANNEL, buffer, num_bytes);
-	data = buffer;
-
-	if (err > 0 ){
-		return 0;
-	}
-	else{
-		return 1;
-	}
-}
-
-
 /* spiWrite: Write 'num_bytes' from the 'data' buffer to SPI device.
  *
  * Return: error status. '0' on success.
@@ -95,7 +72,7 @@ uint8_t spiWrite(uint8_t *data, uint8_t num_bytes){
 uint8_t spiRW(uint8_t *data, uint32_t num_bytes){
 	uint8_t err;
 	err = wiringPiSPIDataRW(SPI_CHANNEL, data, num_bytes);
-	if (err >= 0 ){
+	if (err > 0 ){
 		return 0;
 	}
 	else{

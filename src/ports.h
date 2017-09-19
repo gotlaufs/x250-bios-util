@@ -24,14 +24,6 @@
 uint8_t spiInit(int *file_descriptor);
 
 
-/* spiRead: Read 'num_bytes' into 'data' buffer.
- *
- * Return: error status. '0' on success.
- */ 
-// TODO: Remove this as SPI read makes no sense ..
-uint8_t spiRead(uint8_t *data, uint8_t num_bytes);
-
-
 /* spiWrite: Write 'num_bytes' from the 'data' buffer to SPI device.
  *
  * Return: error status. '0' on success.
