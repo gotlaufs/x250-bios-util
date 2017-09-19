@@ -8,7 +8,14 @@
 #ifndef _ERROR_H_
 #define _ERROR_H_
 
-#define ERROR_NO_ERROR 0
+#define ERROR_NO_ERROR			0
+#define ERROR_SPI_INIT_FAIL		10
+#define ERROR_SPI_WRITE_FAIL	11
+#define ERROR_SPI_WRITE_ENABLE	12
+
+#define ERROR_REG_NOT_EXIST		20
+
+#define ERROR_OUT_OF_BOUNDS 	30
 
 // Avoiding common 'errno'
 extern uint8_t errvar;

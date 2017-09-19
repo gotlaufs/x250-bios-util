@@ -5,6 +5,7 @@
  *
  */
 #include <stdio.h>
+#include <stdint.h>
 #include "error.h"
 
 void errForm(char *msg);
@@ -16,6 +17,20 @@ void printError(void){
 	switch(errvar){
 		case ERROR_NO_ERROR:
 			errForm("No error");
+			break;
+		case ERROR_SPI_INIT_FAIL:
+			errForm("Unable to initialize SPI inteface");
+			break;
+		case ERROR_SPI_WRITE_FAIL:
+			errForm("Failed to write to SPI interface");
+			break;
+		case ERROR_SPI_WRITE_ENABLE:
+			errForm("Failed to get write access to EEPROM chip");
+		case ERROR_REG_NOT_EXIST:
+			errForm("Register does not exist (wrong number)");
+			break;
+		case ERROR_OUT_OF_BOUNDS:
+			errForm("Attempted to access memory out of bounds");
 			break;
 		default:
 			errForm("Unknown error");

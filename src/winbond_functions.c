@@ -9,6 +9,7 @@
 #include "winbond_functions.h"
 #include "winbond_defines.h"
 #include "ports.h"
+#include "error.h"
 // DEBUG
 #include <stdio.h>
 
@@ -35,6 +36,7 @@ uint8_t readSR(uint8_t reg, uint8_t *data){
 		break;
 	default:
 		// Error condition
+		errvar = ERROR_REG_NOT_EXIST;
 		return 1;	
 	}
 	
@@ -70,7 +72,7 @@ uint8_t writeSR(uint8_t reg, uint8_t data){
 		break;
 	default:
 		// Error condition
-		printf("Received wrong reg value: %d\n", reg);
+		errvar = ERROR_REG_NOT_EXIST;
 		return 1;	
 	}
 
@@ -114,8 +116,7 @@ uint8_t readSecurityReg(uint8_t reg, uint8_t *data){
 		address = ADDR_SEC_R_3;
 		break;
 	default:
-		// Error condition
-		printf("Received wrong reg value: %d\n", reg);
+		errvar = ERROR_REG_NOT_EXIST;
 		return 1;
 	}
 
@@ -163,13 +164,16 @@ void waitSPIAvailable(void){
  */
 uint8_t writeEnable(void){
 	uint8_t we = INS_WRITE_ENABLE;
-	// TODO: Add error checking
-	spiWrite(&we, 1);
+	if (spiWrite(&we, 1)){
+		return 1;
+	}
+	waitSPIAvailable();
 
-	// Debug:
-	readSR(1, &we);
+	if (readSR(1, &we)){
+		return 1;
+	}
 	if(!(we & SR1_WEL)){
-		// printf("writeSR: ERROR: Unable to get write access to SPI dev!\n");
+		errvar = ERROR_SPI_WRITE_ENABLE;
 		return 1;
 	}
 	else{
@@ -195,9 +199,7 @@ uint8_t readData(uint8_t *data, uint32_t num_bytes, uint32_t address){
 	uint16_t rem_bytes;
 	// Check if enough bytes in memory
 	if ((address + num_bytes) > MEMORY_SIZE){
-		// Out of bounds
-		printf("readData: Out of bounds! max address = %x, Mem size = %x\n",
-			 	address + num_bytes, MEMORY_SIZE);
+		errvar = ERROR_OUT_OF_BOUNDS;
 		return 1;
 	}
 

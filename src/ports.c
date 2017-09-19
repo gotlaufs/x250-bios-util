@@ -5,6 +5,7 @@
  */
 #include <stdint.h>
 #include "ports.h"
+#include "error.h"
 
 // RaspberryPi SPI library
 // Test if need to use mocks if not compiling on RaspberryPi
@@ -26,6 +27,7 @@ uint8_t spiInit(int *file_descriptor){
 		return 0;
 	}
 	else{
+		errvar = ERROR_SPI_INIT_FAIL;
 		return 1;
 	}
 }
@@ -52,6 +54,7 @@ uint8_t spiWrite(uint8_t *data, uint8_t num_bytes){
 		return 0;
 	}
 	else{
+		errvar = ERROR_SPI_WRITE_FAIL;
 		return 1;
 	}
 }
@@ -76,6 +79,7 @@ uint8_t spiRW(uint8_t *data, uint32_t num_bytes){
 		return 0;
 	}
 	else{
+		errvar = ERROR_SPI_WRITE_FAIL;
 		return 1;
 	}
 }
