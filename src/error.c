@@ -32,6 +32,9 @@ void printError(void){
 		case ERROR_OUT_OF_BOUNDS:
 			errForm("Attempted to access memory out of bounds");
 			break;
+		case ERROR_TOO_BIG_READ:
+			errForm("More data requested for read than the read chunk size");
+			break;
 		case ERROR_OPEN_FILE:
 			errForm("Unable to open file");
 			break;

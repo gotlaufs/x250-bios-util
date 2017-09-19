@@ -16,6 +16,7 @@
 #define ERROR_REG_NOT_EXIST		20
 
 #define ERROR_OUT_OF_BOUNDS 	30
+#define ERROR_TOO_BIG_READ		31
 
 #define ERROR_OPEN_FILE			40
 

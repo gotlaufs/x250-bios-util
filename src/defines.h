@@ -7,6 +7,14 @@
 #ifndef _DEFINES_H_
 #define _DEFINES_H_
 
+/* Read buffer size
+ * PI's default SPI buffer is 4 kB, and must add 4 bytes for instruction
+ * + address.
+ * Pi's buffer can be increased, but that could make porting harder for
+ * small memory devices.
+ */
+#define READ_CHUNK_SIZE 0x800 // 2 kB
+
 #define EEPROM_FILE		"eeprom_dump"
 #define REGISTER_FILE	"status_registers.txt"
 #define SEC_REG_FILE_1 	"security_register1"

@@ -59,8 +59,7 @@ uint8_t writeEnable(void);
  * 			address: data address to begin read. Address is 24-bits long
  * Return:	error status. '0' on success.
  *
- * Entire memory (up to address 'MEMORY_SIZE') can be read in single instruction
- * 'data' array must be allocated for full read. 
+ * READ_CHUNK_SIZE is the maximum to be read in single call 
  */
 uint8_t readData(uint8_t *data, uint32_t num_bytes, uint32_t address);
 

@@ -6,10 +6,12 @@
 
 #include <stdint.h>
 #include <stdlib.h>
+#include <string.h>	// For memcpy()
 #include "winbond_functions.h"
 #include "winbond_defines.h"
 #include "ports.h"
 #include "error.h"
+#include "defines.h"
 // DEBUG
 #include <stdio.h>
 
@@ -189,69 +191,39 @@ uint8_t writeEnable(void){
  * 			address: data address to begin read. Address is 24-bits long
  * Return:	error status. '0' on success.
  *
- * Memory will be read in 2kB chunks because default RaspberryPi SPI buffer is
- * 4 kB and 4 bytes are needed for instruction+address.
+ * READ_CHUNK_SIZE is the maximum to be read in single call.
  */
 uint8_t readData(uint8_t *data, uint32_t num_bytes, uint32_t address){
-	const uint16_t CHUNK_SIZE = 0x800; // 2kB
-	uint32_t i, j;
-	uint16_t num_chunks;
-	uint16_t rem_bytes;
+	uint32_t i;
+	uint8_t *buffer;
+	
 	// Check if enough bytes in memory
 	if ((address + num_bytes) > MEMORY_SIZE){
 		errvar = ERROR_OUT_OF_BOUNDS;
 		return 1;
 	}
-
-	// Calculate number of 2kB chunks to read and leftover bytes
-	num_chunks = num_bytes / CHUNK_SIZE;
-	rem_bytes = num_bytes - num_chunks * CHUNK_SIZE;
-
-	uint8_t *buffer; 
-	buffer = (uint8_t *) malloc(CHUNK_SIZE + 4);
 	
-	printf("Number of bytes to read: 0x%x or %d\n", num_bytes, num_bytes);
-	printf("Number of chunks: 0x%x or %d\n", num_chunks, num_chunks);
-	printf("Number of free bytes to read: 0x%x or %d\n", rem_bytes, rem_bytes);
-	for (j=0; j<num_chunks; j++){
-		// DEBUG:
-		printf("Reading chunk %d out of %d\r", j, num_chunks);
-		// Assemble read instruction
-		buffer[0] = INS_READ_DATA;
-		buffer[1] = (uint8_t) (address >> 16);
-		buffer[2] = (uint8_t) (address >> 8);
-		buffer[3] = (uint8_t) (address);
-
-		// Read the data
-		if (spiRW(buffer, CHUNK_SIZE + 4)){
-			return 1;
-		}
-
-		for (i=0; i<CHUNK_SIZE; i++){
-			data[i + j * CHUNK_SIZE] = buffer[i + 4];
-		}
-
-		address += CHUNK_SIZE;
+	// Check if not too much data has been requested
+	if (num_bytes > READ_CHUNK_SIZE){
+		errvar = ERROR_TOO_BIG_READ;
+		return 1;
 	}
-	printf("\n");
-
-	// Leftover bytes
-	if (rem_bytes){
-		printf("Reading leftover bytes.. \n");
-		buffer[0] = INS_READ_DATA;
-		buffer[1] = (uint8_t) address >> 16;
-		buffer[2] = (uint8_t) address >> 8;
-		buffer[3] = (uint8_t) address;
-
-		if (spiRW(buffer, rem_bytes + 4)){
-			return 1;
-		}
-
-		for (i=0; i<rem_bytes; i++){
-			data[i + num_chunks * CHUNK_SIZE] = buffer[i + 4];
-		}
-	}	
-
+	
+	buffer = (uint8_t *) malloc(READ_CHUNK_SIZE + 4);
+	// Assemble read instruction
+	buffer[0] = INS_READ_DATA;
+	buffer[1] = (uint8_t) (address >> 16);
+	buffer[2] = (uint8_t) (address >> 8);
+	buffer[3] = (uint8_t) (address);
+	
+	if (spiRW(buffer, num_bytes+4)){
+		free(buffer);
+		return 1;
+	}
+	
+	memcpy(data, buffer+4, num_bytes);
+	
 	free(buffer);
 	return 0;
+	
 }
