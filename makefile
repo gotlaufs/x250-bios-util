@@ -19,11 +19,11 @@ OBJFILES := $(basename $(OBJFILES))
 OBJFILES := $(addsuffix .o, $(OBJFILES))
 OBJFILES := $(addprefix $(OBJDIR)/, $(OBJFILES))
 
-x250_util: $(OBJFILES) $(OBJDIR) $(EXEDIR)
-	$(CC) -o $(EXEDIR)/$@ $(OBJFILES) $(CFLAGS) $(LIBS)
+$(EXEDIR)/x250_util: $(OBJFILES) | $(OBJDIR) $(EXEDIR)
+	$(CC) -o $@ $(OBJFILES) $(CFLAGS) $(LIBS)
 
-
-$(OBJDIR)/%.o: $(SRCDIR)/%.c $(HFILES) $(OBJDIR)
+# '|' means prerequisite must exist, not be older
+$(OBJFILES) : $(OBJDIR)/%.o: $(SRCDIR)/%.c $(HFILES) | $(OBJDIR)
 	$(CC) -o $@ -c $< $(CFLAGS) $(LIBS)
 
 $(EXEDIR):
