@@ -7,10 +7,11 @@
 uint8_t errvar = ERROR_NO_ERROR;
 
 int main(){
+	uint8_t err;
 	
-	eepromDump();
+	err = eepromDump();
 	
-	if (errvar != ERROR_NO_ERROR){
+	if (err){
 		printError();
 		return 1;
 	}
