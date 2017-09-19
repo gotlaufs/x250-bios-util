@@ -17,6 +17,8 @@
 
 #define ERROR_OUT_OF_BOUNDS 	30
 
+#define ERROR_OPEN_FILE			40
+
 // Avoiding common 'errno'
 extern uint8_t errvar;
 
